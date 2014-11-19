@@ -1,0 +1,13 @@
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 800px;
+    box-shadow: 0 0 5px #ccc;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
