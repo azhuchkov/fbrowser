@@ -1,10 +1,13 @@
 package me.azhuchkov.fbrowser.web;
 
+import me.azhuchkov.fbrowser.domain.FileObject;
+import me.azhuchkov.fbrowser.repository.FileSystem;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -14,10 +17,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/fs/*")
 public class FilesystemController {
+    private final FileSystem fileSystem;
 
-    @RequestMapping("/browse")
-    public List<String> browse(@RequestParam String path) {
-        return Arrays.asList(path);
+    @Autowired
+    public FilesystemController(FileSystem fileSystem) {
+        this.fileSystem = fileSystem;
     }
 
+    @RequestMapping("/browse")
+    public List<FileObject> browse(@RequestParam String path) throws IOException {
+        return fileSystem.listFiles(path);
+    }
 }

@@ -29,3 +29,17 @@ To run it as a part of build lifecycle ( can be useful in development to be able
 $ ./gradlew bootRun
 
 NOTE: Hit <ctrl+c> to shutdown.
+
+
+Configuration
+-------------
+
+Application configuration placed in application.yml file. It is possible to customize options
+using command line arguments: --option=value
+
+Available options:
+
+  * 'filesystem.base' sets browser root directory. By default application uses process working directory as a root.
+    You can choose any directory you want like this: --filesystem.base=/home/user
+
+  * 'server.port' sets Tomcat connector port. Example: --server.port=9000
