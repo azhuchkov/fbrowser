@@ -22,13 +22,16 @@ After the app is built (and its uber-jar is packaged), it's possible to run it:
 
 $ java -jar build/libs/fbrowser-0.1.0-SNAPSHOT.jar
 
-And that's it! No need to install external Servlet Container or something else.
+And that's it! No need to install external Servlet Container or something else. Configuration can be overriden
+using command line arguments, e.g.: --server.port=9000
 
 To run it as a part of build lifecycle ( can be useful in development to be able to update static and template files ):
 
 $ ./gradlew bootRun
 
-NOTE: Hit <ctrl+c> to shutdown.
+In this case configuration can be overriden using: -PjvmArgs='-Dfilesystem.base=/home/andrey'
+
+Hit <ctrl+c> to shutdown application.
 
 
 Configuration

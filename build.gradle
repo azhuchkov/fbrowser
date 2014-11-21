@@ -13,6 +13,12 @@ apply plugin: 'spring-boot'
 sourceCompatibility = 1.7
 version = '0.1.0-SNAPSHOT'
 
+bootRun {
+    if (project.hasProperty('jvmArgs')) {
+        jvmArgs project.jvmArgs.split('\\s+')
+    }
+}
+
 repositories {
     mavenCentral()
 }
