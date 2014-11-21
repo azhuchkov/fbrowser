@@ -33,6 +33,15 @@ public class FileSystem {
     private File base;
 
     /**
+     * Return base directory.
+     *
+     * @return Base directory.
+     */
+    public File getBase() {
+        return base;
+    }
+
+    /**
      * Returns listing of a given node in filesystem hierarchy.
      * Node can be a directory or a ZIP archive file or a path inside archive.
      *

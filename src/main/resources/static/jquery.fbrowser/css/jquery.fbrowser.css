@@ -1,0 +1,82 @@
+/*
+ * fBrowser Plugin Styles
+ */
+
+.fbrowser {
+    font: 100% sans-serif;
+}
+
+.fbrowser .spinner {
+    display: inline-block;
+    margin-left: 3px;
+    margin-bottom: -3px;
+    width: 16px;
+    height: 16px;
+    background: transparent url('../img/spinner.gif') center center no-repeat;
+}
+
+/* List styles */
+.fbrowser ul {
+    list-style: none none;
+    padding: 0 0 0 20px;
+    margin: 0;
+}
+
+.fbrowser ul.root {
+    padding: 0;
+}
+
+.fbrowser li {
+    margin-top: 4px;
+    white-space: nowrap;
+}
+
+/* Selection functionality */
+.fbrowser .item.selected {
+    background-color: #beebff !important;
+}
+
+.fbrowser a.item:hover {
+    background-color: #d2e8f5;
+    cursor: pointer;
+}
+
+/* Expand/Collapse switcher */
+.fbrowser .expander {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    background: url('../img/expand.png') no-repeat 0 3px;
+}
+
+.fbrowser .expander.expanded {
+    background-image: url('../img/collapse.png');
+}
+
+/* Filetype Styles */
+.fbrowser .item {
+    background: no-repeat 3px 50%;
+    padding: 3px 3px 3px 23px;
+    margin-left: 16px;
+}
+
+.fbrowser .expander + .item {
+    margin-left: 0;
+}
+
+.fbrowser .item.directory {
+    background-image: url('../img/filetypes/directory.gif');
+}
+
+.fbrowser .item.archive {
+    background-image: url('../img/filetypes/archive.gif');
+}
+
+.fbrowser .item.image {
+    background-image: url('../img/filetypes/image.png');
+}
+
+.fbrowser .item.other {
+    background-image: url('../img/filetypes/other.gif');
+}

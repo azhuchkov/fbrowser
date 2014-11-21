@@ -11,20 +11,23 @@
 
     <title>fBrowser Demo Application</title>
 
+    <link th:href="@{/jquery.fbrowser/css/jquery.fbrowser.css}" rel="stylesheet"/>
     <link th:href="@{/css/main.css}" rel="stylesheet"/>
 </head>
 
 <body>
     <!-- Main content -->
-    <main class="container">
+    <main>
         <h3>fBrowser Demo Application</h3>
-        <img th:src="@{/img/spinner.gif}" src="/static/img/spinner.gif"/>
+        Browsing directory: <span th:text="${@fileSystem.base.absolutePath}"></span>
+        <div id="tree"></div>
     </main>
 
     <!-- JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script th:src="@{/webjars/jquery/2.1.1/jquery.min.js}"></script>
+    <script th:src="@{/jquery.fbrowser/js/jquery.fbrowser.js}"></script>
     <script th:src="@{/js/app.js}"></script>
 </body>
 </html>

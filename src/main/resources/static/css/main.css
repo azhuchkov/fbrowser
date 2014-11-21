@@ -1,13 +1,19 @@
 body {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
-.container {
+main {
     margin-left: auto;
     margin-right: auto;
     width: 800px;
     box-shadow: 0 0 5px #ccc;
     border-radius: 5px;
     padding: 10px 20px;
+}
+
+#tree {
+    height: 500px;
+    overflow: auto;
+    margin: 10px 0;
 }
