@@ -91,7 +91,7 @@
                     };
 
                     expand($root, "", state.expanded);
-                }).always(function() {
+                }).always(function () {
                     $spinner.remove();
                 });
             });
@@ -137,6 +137,9 @@
             };
 
             if ($children.length) {
+                if ($expander.hasClass("expanded"))
+                    $children.children("li").children(".expanded").trigger("click.fbrowser");
+
                 $children.slideToggle();
 
                 $expander.toggleClass("expanded");
@@ -149,7 +152,7 @@
                 methods._saveState(instanceId, state);
             } else {
                 var $container = $('<ul/>', {
-                    css: { display: 'none' },
+                    css: {display: 'none'},
                     class: 'container'
                 }).appendTo($expander.parent());
 
