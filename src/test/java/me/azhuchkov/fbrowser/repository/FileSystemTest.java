@@ -7,6 +7,7 @@ import me.azhuchkov.fbrowser.exception.UnsupportedArchiveException;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,23 +36,15 @@ public class FileSystemTest {
         assertThat(fileSystem.listFiles("/"), returns(
                 listing("/",
                         item("dir1", DIRECTORY),
-                        item("empty", DIRECTORY),
                         item("archive.zip", ARCHIVE)
                 )));
-
-        assertThat(fileSystem.listFiles("/empty"), returns(listing("/empty")));
-
-        assertThat(fileSystem.listFiles("/empty/"), returns(listing("/empty/")));
 
         assertThat(fileSystem.listFiles("/dir1"), returns(
                 listing("/dir1",
                         item("dir2", DIRECTORY),
-                        item("empty", DIRECTORY),
                         item("doc.txt", OTHER),
                         item("image.tiff", IMAGE)
                 )));
-
-        assertThat(fileSystem.listFiles("/dir1/empty"), returns(listing("/dir1/empty")));
 
         assertThat(fileSystem.listFiles("/dir1/dir2"), returns(
                 listing("/dir1/dir2",
@@ -112,6 +105,18 @@ public class FileSystemTest {
 
         assertThat(fileSystem.listFiles("/archive.zip/tmp/tmp.ukxkr06vVH"), returns(
                 listing("/archive.zip/tmp/tmp.ukxkr06vVH")));
+    }
+
+    @Test
+    @Ignore("Git doesn't allow to store empty directories")
+    public void testEmptyDirBrowsing() throws Exception {
+        assertThat(fileSystem.listFiles("/empty"), returns(listing("/empty")));
+
+        assertThat(fileSystem.listFiles("/empty/"), returns(listing("/empty/")));
+
+        assertThat(fileSystem.listFiles("/dir1/empty"), returns(listing("/dir1/empty")));
+
+        assertThat(fileSystem.listFiles("/dir1/empty/"), returns(listing("/dir1/empty/")));
     }
 
     @Test(expected = IllegalArgumentException.class)
