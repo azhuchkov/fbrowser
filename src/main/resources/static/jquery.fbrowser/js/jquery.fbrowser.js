@@ -18,9 +18,9 @@
             };
 
             if (isDirectory(file1))
-                return isDirectory(file2) ? file1.path.localeCompare(file2.path) : -1;
+                return isDirectory(file2) ? file1.name.localeCompare(file2.name) : -1;
             else
-                return isDirectory(file2) ? 1 : file1.path.localeCompare(file2.path);
+                return isDirectory(file2) ? 1 : file1.name.localeCompare(file2.name);
         },
 
         errorHandler: function (response) {
@@ -189,19 +189,22 @@
                 $.each(files.sort(settings.sort), function (index, file) {
                     var $li = $('<li/>');
 
+                    var filepath =
+                        (path + settings.splitter + file.name).replace("//", "/");
+
                     if (file.expandable) {
                         $('<a/>', {
                             class: 'expander',
-                            'data-path': file.path
+                            'data-path': filepath
                         }).on('click.fbrowser', function () {
                             methods._toggle($(this), data);
                         }).appendTo($li);
                     }
 
                     $('<a/>', {
-                        text: settings.formatName(file.path),
-                        title: file.path,
-                        class: 'item ' + file.type.toLowerCase() + (file.path === state.selected ? " selected" : "")
+                        text: settings.formatName(file.name),
+                        title: filepath,
+                        class: 'item ' + file.type.toLowerCase() + (filepath === state.selected ? " selected" : "")
                     }).bind('click.fbrowser', function () {
                         methods._select($(this), data);
                     }).appendTo($li);
