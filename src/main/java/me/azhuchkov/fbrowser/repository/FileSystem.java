@@ -1,27 +1,22 @@
 package me.azhuchkov.fbrowser.repository;
 
 import me.azhuchkov.fbrowser.domain.FileObject;
-import me.azhuchkov.fbrowser.domain.FileType;
-import me.azhuchkov.fbrowser.exception.UnsupportedArchiveException;
+import me.azhuchkov.fbrowser.repository.spi.ContainerBrowser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URLConnection;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
-
-import static me.azhuchkov.fbrowser.domain.FileType.DIRECTORY;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * FileSystem browser with ZIP archive browsing support.
+ * FileSystem browser with support of archive viewing.
  *
  * @author Andrey Zhuchkov
  *         Date: 20.11.14
@@ -31,8 +26,28 @@ public class FileSystem {
     /**
      * Prefix for all paths requested by clients to find real path.
      */
-    @Value("${filesystem.base}")
-    private File base;
+    private final File base;
+
+    /**
+     * Map of browsers by supported container type.
+     */
+    private final Map<String, ContainerBrowser> browsers;
+
+    @Autowired
+    public FileSystem(@Value("${filesystem.base}") File base,
+                      List<ContainerBrowser> browsers) {
+        this.base = base;
+
+        Map<String, ContainerBrowser> browserMap = new HashMap<>(browsers.size());
+
+        for (ContainerBrowser browser : browsers) {
+            for (String type : browser.getSupportedTypes()) {
+                browserMap.put(type.toUpperCase(), browser);
+            }
+        }
+
+        this.browsers = browserMap;
+    }
 
     /**
      * Return base directory.
@@ -56,139 +71,38 @@ public class FileSystem {
         if (!path.startsWith("/"))
             throw new IllegalArgumentException("Only absolute paths allowed");
 
+        if (path.contains("./"))
+            throw new IllegalArgumentException("Relative paths are not allowed");
+
+        File clientFile = new File(path);
         File resolved = new File(base, path);
 
-        if (Files.isDirectory(resolved.toPath()))
-            return listDirectory(resolved, path);
-        else {
-            List<String> archivePathNames = new ArrayList<>();
+        List<String> archivePathNames = new ArrayList<>();
 
-            while (!resolved.exists() && resolved.getParentFile() != null) {
-                archivePathNames.add(resolved.getName());
-                resolved = resolved.getParentFile();
-            }
-
-            if (resolved.exists() && !Files.isDirectory(resolved.toPath())) {
-                StringBuilder builder = new StringBuilder();
-
-                for (int i = archivePathNames.size() - 1; i >= 0; i--) {
-                    builder.append(archivePathNames.get(i));
-
-                    if (i > 0)
-                        builder.append("/");
-                }
-
-                return listArchive(resolved, builder.toString(), path);
-            } else
-                throw new FileNotFoundException(path);
-        }
-    }
-
-    /**
-     * Returns listing of a ZIP archive.
-     *
-     * @param archivePath  archive file to observe.
-     * @param internalPath path inside the archive. Must be relative.
-     * @param clientPath   path to file.
-     * @return list of file objects that belong to requested path of an archive.
-     * @throws IOException If something bad happens.
-     */
-    private List<FileObject> listArchive(File archivePath, String internalPath, String clientPath) throws IOException {
-        Set<FileObject> matchedEntries = new HashSet<>();
-
-        try (ZipFile zipFile = new ZipFile(archivePath)) {
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                String entryPath = entry.getName().replaceFirst("^/", "");
-
-                if (entryPath.equals(internalPath) && !entry.isDirectory())
-                    throw new UnsupportedArchiveException(clientPath);
-
-                if (!internalPath.isEmpty() && !entryPath.startsWith(internalPath + "/"))
-                    continue;
-
-                String relativeEntryPath =
-                        entryPath.substring(internalPath.length()).replaceAll("(^/|/$)", "");
-
-                int nameEndIdx = relativeEntryPath.indexOf("/");
-
-                String name = nameEndIdx < 0 ?
-                        relativeEntryPath :
-                        relativeEntryPath.substring(0, nameEndIdx);
-
-                FileType type = nameEndIdx >= 0 ? DIRECTORY : fileType(entry);
-
-                matchedEntries.add(new FileObject(clientPath, name, type));
-            }
-        } catch (ZipException e) {
-            throw new UnsupportedArchiveException("unsupported: " + clientPath, e);
+        while (!resolved.exists() && clientFile.getParentFile() != null) {
+            archivePathNames.add(clientFile.getName());
+            clientFile = clientFile.getParentFile();
+            resolved = resolved.getParentFile();
         }
 
-        if (matchedEntries.isEmpty())
-            throw new FileNotFoundException(clientPath);
+        if (Files.notExists(resolved.toPath()))
+            throw new FileNotFoundException(path);
 
-        matchedEntries.remove(new FileObject(clientPath, "", DIRECTORY));
+        ContainerBrowser browser =
+                browsers.get(FileTypeDetector.fileType(resolved));
 
-        return new ArrayList<>(matchedEntries);
-    }
+        if (browser == null)
+            throw new UnsupportedOperationException("unsupported container: " + path);
 
-    /**
-     * Returns listing of a directory.
-     *
-     * @param dir        directory to observe.
-     * @param clientPath path to file.
-     * @return list of file objects that belong to requested directory.
-     * @throws IOException If something bad happens.
-     */
-    private List<FileObject> listDirectory(File dir, String clientPath) throws IOException {
-        if (!Files.isDirectory(dir.toPath())) {
-            throw new IOException("Given path is not a directory: " + dir.getAbsolutePath());
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = archivePathNames.size() - 1; i >= 0; i--) {
+            builder.append(archivePathNames.get(i));
+
+            if (i > 0)
+                builder.append("/");
         }
 
-        List<FileObject> result = new ArrayList<>();
-
-        try (DirectoryStream<Path> paths = Files.newDirectoryStream(dir.toPath())) {
-            for (Path path : paths) {
-                String name = path.getName(path.getNameCount() - 1).toString();
-                result.add(new FileObject(clientPath, name, fileType(path)));
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Returns type for given file.
-     */
-    private static FileType fileType(Path path) throws IOException {
-        if (Files.isDirectory(path))
-            return DIRECTORY;
-
-        return guessContentType(path.getName(path.getNameCount() - 1).toString());
-    }
-
-    /**
-     * Returns type for ZIP entry.
-     */
-    private static FileType fileType(ZipEntry entry) throws IOException {
-        if (entry.isDirectory())
-            return DIRECTORY;
-
-        return guessContentType(entry.getName());
-    }
-
-    /**
-     * Guess content type.
-     */
-    private static FileType guessContentType(String name) {
-        // it seems Java is not so good in guessing MIME
-
-        String contentType = name.toLowerCase().endsWith(".rar") ?
-                "application/x-rar-compressed" :
-                URLConnection.guessContentTypeFromName(name);
-
-        return contentType != null ? FileType.byMimeType(contentType) : FileType.OTHER;
+        return browser.list(resolved, builder.toString());
     }
 }

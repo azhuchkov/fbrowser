@@ -22,4 +22,11 @@ public class GlobalControllerExceptionHandler {
         return e.getMessage();
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    @ExceptionHandler(UnsupportedOperationException.class)
+    public String handleUnsupportedOperation(UnsupportedOperationException e) {
+        return e.getMessage();
+    }
+
 }

@@ -17,3 +17,7 @@ main {
     overflow: auto;
     margin: 10px 0;
 }
+
+.fbrowser .item.archive {
+    background-image: url('../img/archive.gif');
+}

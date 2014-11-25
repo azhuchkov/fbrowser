@@ -56,9 +56,9 @@
 
 /* Filetype Styles */
 .fbrowser .item {
-    background: no-repeat 3px 50%;
     padding: 3px 3px 3px 23px;
     margin-left: 16px;
+    background: url('../img/filetypes/other.gif') no-repeat 3px 50%;
 }
 
 .fbrowser .expander + .item {
@@ -69,14 +69,6 @@
     background-image: url('../img/filetypes/directory.gif');
 }
 
-.fbrowser .item.archive {
-    background-image: url('../img/filetypes/archive.gif');
-}
-
 .fbrowser .item.image {
     background-image: url('../img/filetypes/image.png');
-}
-
-.fbrowser .item.other {
-    background-image: url('../img/filetypes/other.gif');
 }

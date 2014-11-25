@@ -12,6 +12,15 @@
         pathParam: 'path',
         splitter: '/',
 
+        containerTypes: ["DIRECTORY"],
+
+        typeClasses: {
+            "image": ["FILE_JPG", "FILE_TIFF", "FILE_BMP", "FILE_PNG", "FILE_ICO"],
+            "directory": ["DIRECTORY"]
+        },
+
+        typeClassesExt: {},
+
         sort: function (file1, file2) {
             var isDirectory = function (file) {
                 return file.type.toUpperCase() === "DIRECTORY";
@@ -38,7 +47,15 @@
     /* Plugin methods */
     var methods = {
         init: function (options) {
-            var settings = $.extend(defaults, options);
+            var settings = $.extend({}, defaults, options);
+
+            settings.typeClassMap = {};
+
+            $.each($.extend({}, settings.typeClasses, settings.typeClassesExt), function (cls, types) {
+                $.each(types, function (i, type) {
+                    settings.typeClassMap[type] = cls;
+                });
+            });
 
             return this.each(function () {
                 var $this = $(this),
@@ -195,7 +212,7 @@
                     var filepath =
                         (path + settings.splitter + file.name).replace("//", "/");
 
-                    if (file.expandable) {
+                    if (settings.containerTypes.indexOf(file.type) > -1) {
                         $('<a/>', {
                             class: 'expander',
                             'data-path': filepath
@@ -204,10 +221,13 @@
                         }).appendTo($li);
                     }
 
+                    var classes =
+                        'item ' + settings.typeClassMap[file.type] + (filepath === state.selected ? " selected" : "");
+
                     $('<a/>', {
                         text: settings.formatName(file.name),
                         title: filepath,
-                        class: 'item ' + file.type.toLowerCase() + (filepath === state.selected ? " selected" : "")
+                        class: classes
                     }).bind('click.fbrowser', function () {
                         methods._select($(this), data);
                     }).appendTo($li);

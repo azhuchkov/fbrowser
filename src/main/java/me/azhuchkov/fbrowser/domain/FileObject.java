@@ -1,7 +1,5 @@
 package me.azhuchkov.fbrowser.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
  * Entry of a filesystem hierarchy.
  *
@@ -9,52 +7,35 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *         Date: 20.11.14
  */
 public class FileObject {
-    /** Path to parent file object. */
-    private final String parent;
-
     /** File name. */
     private final String name;
 
     /** Type. */
-    private final FileType type;
+    private final String type;
 
     /**
      * Creates new instance.
      *
-     * @param parent parent's path.
      * @param name filename.
      * @param type object type.
      * @throws java.lang.IllegalArgumentException if path or type is <code>null</code>.
      */
-    public FileObject(String parent, String name, FileType type) {
-        if (parent == null)
-            throw new IllegalArgumentException("parent cannot be null");
-
+    public FileObject(String name, String type) {
         if (name == null)
             throw new IllegalArgumentException("name cannot be null");
 
         if (type == null)
             throw new IllegalArgumentException("type cannot be null");
 
-        this.parent = parent;
         this.name = name;
         this.type = type;
-    }
-
-    @JsonIgnore
-    public String getParent() {
-        return parent;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean isExpandable() {
-        return type == FileType.DIRECTORY || type == FileType.ARCHIVE;
-    }
-
-    public FileType getType() {
+    public String getType() {
         return type;
     }
 
@@ -66,16 +47,14 @@ public class FileObject {
         FileObject that = (FileObject) o;
 
         if (!name.equals(that.name)) return false;
-        if (!parent.equals(that.parent)) return false;
-        if (type != that.type) return false;
+        if (!type.equals(that.type)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = parent.hashCode();
-        result = 31 * result + name.hashCode();
+        int result = name.hashCode();
         result = 31 * result + type.hashCode();
         return result;
     }
@@ -83,9 +62,8 @@ public class FileObject {
     @Override
     public String toString() {
         return "FileObject{" +
-                "parent='" + parent + '\'' +
-                ", name='" + name + '\'' +
-                ", type=" + type +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }
