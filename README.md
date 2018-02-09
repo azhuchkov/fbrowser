@@ -1,4 +1,4 @@
- Web File Browser Demo Application
+fBrowser Demo Application
 ==================================
 
 This is a simple web-application which has been written as a test project. The main idea of it is to make a reusable
@@ -8,7 +8,9 @@ saved automatically, so the page can be refreshed without any loss.
 
 The application is built on top of [Spring](https://spring.io/) stack 
 using [Spring Boot](https://projects.spring.io/spring-boot/) for quick start.
-The component itself is implemented as a [jQuery](https://jquery.com/) plugin. 
+The component itself is implemented as a [jQuery](https://jquery.com/) plugin.
+
+![fBrowser Demo](https://github.com/azhuchkov/fbrowser/blob/master/fbrowser-demo-600px.gif)
 
 
 Requirements
