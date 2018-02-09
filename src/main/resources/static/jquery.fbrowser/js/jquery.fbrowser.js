@@ -186,7 +186,9 @@
                         $container.remove();
                     })
                     .always(function () {
-                        $spinner.remove();
+                        $spinner.fadeOut(function () {
+                            $spinner.remove();
+                        });
                     });
             }
         },
