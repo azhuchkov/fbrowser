@@ -37,3 +37,10 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
 }
+
+task docker(type: Exec, dependsOn: build) {
+    description 'Builds image for Docker.'
+
+    commandLine 'docker', 'build', '.', '-t', "azhuchkov/${project.name}",
+            '--build-arg', "JAR_FILE=${projectDir.toPath().relativize(jar.archivePath.toPath())}"
+}
