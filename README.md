@@ -1,6 +1,16 @@
  Web File Browser Demo Application
 ==================================
 
+This is a simple web-application which has been written as a test project. The main idea of it is to make a reusable
+web-component which implements some base functionality for browsing files. Files are loaded dynamically by AJAX calls,
+ZIP-archives can be browsed as directories, different file types have different icons. The state of file tree is 
+saved automatically, so the page can be refreshed without any loss. 
+
+The application is built on top of [Spring](https://spring.io/) stack 
+using [Spring Boot](https://projects.spring.io/spring-boot/) for quick start.
+The component itself is implemented as a [jQuery](https://jquery.com/) plugin. 
+
+
 Requirements
 ------------
 
