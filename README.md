@@ -13,6 +13,14 @@ The component itself is implemented as a [jQuery](https://jquery.com/) plugin.
 ![fBrowser Demo](https://github.com/azhuchkov/fbrowser/blob/master/fbrowser-demo-600px.gif)
 
 
+Live Demo
+---------
+
+The application instance is deployed to [AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/). 
+To see it live follow the link: <http://fbrowser.us-west-2.elasticbeanstalk.com/>. There you can browse 
+container's filesystem and contents of the application's itself (`/app.jar`).
+ 
+
 Requirements
 ------------
 
