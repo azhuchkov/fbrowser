@@ -66,12 +66,17 @@ Running using Docker
 If you are a [Docker](https://www.docker.com/) user you can just run prebuilt application with all the dependencies 
 using the following command:
 
-`$ docker run -p 8080:8080 -v '<local-absolute-path>:/data' azhuchkov/fbrowser --filesystem.base=/data`
+`$ docker run -p 8080:8080 azhuchkov/fbrowser`
 
-where you __must__ change the `<local-absolute-path>` with absolute path of your own directory you want to view.
 The _image_ `azhuchkov/fbrowser` would be downloaded from [Docker Hub](https://hub.docker.com/r/azhuchkov/fbrowser/) 
 and started as a new container. If you want to cleanup the container when it exits, add option `--rm`.
 
+That way you will see the root of the container's file system hierarchy. If you want to browse something more
+interesting, you should mount you local directory and pass its path as an argument:
+
+`$ docker run -p 8080:8080 -v '<local-absolute-path>:/data' azhuchkov/fbrowser --filesystem.base=/data`
+
+where you __must__ change the `<local-absolute-path>` with absolute path of your own directory you want to view.
 
 Building Docker image
 ---------------------
