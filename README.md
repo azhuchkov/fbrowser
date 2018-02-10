@@ -21,10 +21,12 @@ To see it live follow the link: <http://fbrowser.us-west-2.elasticbeanstalk.com/
 container's filesystem and contents of the application's itself (`/app.jar`).
  
 
-Requirements
-------------
+Prerequisites
+-------------
 
 JDK 1.7
+
+>See below for running using Docker.
 
 
 Building
